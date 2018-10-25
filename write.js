@@ -2,6 +2,7 @@
 
 const hypercore = require('hypercore')
 const async = require('async')
+const os = require('os')
 
 // january 2017, december 2017, october 2018
 const trades = require('./trades-set.json')
@@ -9,6 +10,7 @@ const feed = hypercore('./test') // store data in ./directory
 
 let last
 function test () {
+  console.log(`[info] nodejs@${process.version}`)
   const started = last = Date.now()
   const tenBillion = 10000000000
   let count = 0
@@ -21,7 +23,6 @@ function test () {
 
       if (count % 50000000 === 0) {
         print()
-        last = Date.now()
       }
 
       feed.append(JSON.stringify(entry), (err) => {
@@ -34,19 +35,19 @@ function test () {
       const ended = Date.now()
 
       const diff = ended - started
-      console.log('started:', started, 'ended', ended)
-      console.log('ran for ', diff, 'ms')
+      console.log('[info] started:', started, 'ended', ended)
+      console.log('[info] ran fo ', diff, 'ms')
 
       if (err) {
         print()
 
-        console.log('error at seq', count)
+        console.log('[info] error at seq', count)
         console.log(err)
         process.exit(1)
       }
 
       print()
-      console.log('finished sucessfully.')
+      console.log('[info] finished sucessfully.')
       process.exit(0)
     }
   )
@@ -58,8 +59,13 @@ function print () {
 
   const cM = process.memoryUsage()
   const cC = process.cpuUsage()
+  const lA = os.loadavg()
+
+  console.log(n, diff, JSON.stringify(lA))
   console.log(n, diff, JSON.stringify(cM))
   console.log(n, diff, JSON.stringify(cC))
+
+  last = Date.now()
 }
 /*
 function printStats () {
