@@ -7,8 +7,9 @@ const async = require('async')
 const trades = require('./trades-set.json')
 const feed = hypercore('./test') // store data in ./directory
 
+let last
 function test () {
-  const started = Date.now()
+  const started = last = Date.now()
   const tenBillion = 10000000000
   let count = 0
 
@@ -18,8 +19,9 @@ function test () {
       const ri = Math.floor(Math.random() * trades.length)
       const entry = trades[ri]
 
-      if (count % 100000 === 0) {
+      if (count % 50000000 === 0) {
         print()
+        last = Date.now()
       }
 
       feed.append(JSON.stringify(entry), (err) => {
@@ -51,10 +53,13 @@ function test () {
 }
 
 function print () {
+  const n = Date.now()
+  const diff = n - last
+
   const cM = process.memoryUsage()
   const cC = process.cpuUsage()
-  console.log('cM', JSON.stringify(cM))
-  console.log('cC', JSON.stringify(cC))
+  console.log(n, diff, JSON.stringify(cM))
+  console.log(n, diff, JSON.stringify(cC))
 }
 /*
 function printStats () {
