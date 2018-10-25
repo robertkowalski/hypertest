@@ -8,6 +8,7 @@ const trades = require('./trades-set.json')
 const feed = hypercore('./test') // store data in ./directory
 
 function test () {
+  const started = Date.now()
   const tenBillion = 10000000000
   let count = 0
 
@@ -28,6 +29,12 @@ function test () {
       })
     },
     function (err, n) {
+      const ended = Date.now()
+
+      const diff = ended - started
+      console.log('started:', started, 'ended', ended)
+      console.log('ran for ', diff, 'ms')
+
       if (err) {
         print()
 
